@@ -1,0 +1,38 @@
+<div class="row">
+    <h2 class="mb-3"><?=!empty($ped)?'Editar Pedido':'Novo Pedido'?></h2>
+</div>
+<form name="cadastrar-pedido" method="post">
+    <div class="form-group row">
+        <div class="col-md-8 mb-3">
+            <label for="nome">Produto</label>
+            <select name="cmb-prod" id="cmb-prod" class="selectpicker form-control" required>
+                <option value="">Selecionar produto</option>
+                <?php if(count($prods) > 0) : ?>
+                    <?php foreach($prods as $prod) : ?>
+                        <option value="<?=$prod->getId()?>"><?=$prod->getSku() . ' - ' . $prod->getNome()  . ' - ' .  'R$'.number_format($prod->getPreco(), 2,",",".")?></option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+            <a id="btn-add-prod" class="btn btn-secondary" href="">Adicionar</a>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-12 mb-3">
+            <ul id="lista-prod" class="list-group"></ul>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-4 mb-3">
+            <label for="total">Total (R$)</label>
+            <input type="text" class="form-control" name="total" id="total" placeholder="000.00" readonly required>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="form-group">
+                <input type="hidden" name="prods_id" id="prods_id" value="">
+                <input type="hidden" name="id" value="<?=!empty($ped)?$ped->getId():''?>">
+                <a class="btn btn-secondary" href="<?php echo $this->url('pedido') ?>">Voltar</a>
+                <input type="submit" class="btn btn-primary" name="submit" id="submit" value="Enviar">
+        </div>
+    </div>
+</form>

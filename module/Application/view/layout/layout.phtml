@@ -1,0 +1,104 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('Teste Tecnofit - Evandro Morini')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+        <?php echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+            ->prependStylesheet($this->basePath('css/style.css'))
+            ->prependStylesheet($this->basePath('css/bootstrap-theme.min.css'))
+            ->prependStylesheet($this->basePath('css/bootstrap.min.css')) 
+        ?>
+
+        <!-- Scripts -->
+        <?php echo $this->headScript()
+            ->prependFile($this->basePath('js/bootstrap.min.js'))
+            ->prependFile($this->basePath('js/jquery.min.js'))
+            ->prependFile($this->basePath('js/respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9',))
+            ->prependFile($this->basePath('js/html5shiv.min.js'),   'text/javascript', array('conditional' => 'lt IE 9',)); 
+        ?>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#btn-add-prod").on("click", function(e) {
+                    var prod_id = $('#cmb-prod option:selected').val();
+                    var prod_name = $('#cmb-prod option:selected').text();
+                    if(prod_id  !== '' && prod_name !== '') {
+                        if($('li[data-id=' + prod_id + ']').length == 0) {
+                            $('#lista-prod').append(
+                                '<li class="list-group-item prod-ped-li" data-id="' + prod_id + 
+                                    '" data-toggle="tooltip" title="Duplo Clique para excluir" ondblclick="javascript:$(this).remove()">' + prod_name + 
+                                '</li>');
+                        } else {
+                            alert('Produto já adicionado!');
+                        }
+                    } else {
+                        alert('Selecione um produto');
+                    }
+                    calculaTotal();
+                    return false;
+                });
+
+                $("#preco").on("input", function() {
+                    var v= $(this).val(), vc = v.replace(/[^0-9\.]/, '');
+                    if (v !== vc)        
+                        $(this).val(vc);
+                });
+
+                function calculaTotal() {
+                    var prods_id = [];
+                    $('#lista-prod li').each(function() {
+                        prods_id.push($(this).data('id'));
+                    });
+                    $('#prods_id').val(JSON.stringify(prods_id));
+
+                    if(prods_id.length > 0) {
+                        $.ajax({
+                            type: 'POST',
+                            url:  'total',
+                            data: { 
+                                prods_id : prods_id
+                            },
+                            async: false,
+                            timeout: 30000,
+                            success: function(total) {
+                                $('#total').val(total);
+                            },
+                            error: function() {
+                                console.log('Ajax request error.');
+                            }
+                        });
+                    }
+                }
+            });
+        </script>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="<?php echo $this->url('home') ?>">Pedidos</a></li>
+                        <li><a href="<?php echo $this->url('produto') ?>">Produtos</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <?php echo $this->content; ?>
+            <hr>
+            <footer>
+                <p>&copy; 2019 - Desenvolvido por Evandro Morini</p>
+            </footer>
+        </div>
+        <?php echo $this->inlineScript() ?>
+    </body>
+</html>

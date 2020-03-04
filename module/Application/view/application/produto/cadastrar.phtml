@@ -1,0 +1,28 @@
+<div class="row">
+    <h2 class="mb-3"><?=!empty($prod)?'Editar Produto':'Novo Produto'?></h2>
+</div>
+<div class="row">
+    <form name="cadastrar-produto" method="post">
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" class="form-control" name="nome" id="nome" placeholder="Nome do Produto" maxlength="125" value="<?=!empty($prod)?$prod->getNome():''?>" required>
+        </div>
+        <div class="form-group">
+            <label for="sku">Código SKU</label>
+            <input type="text" class="form-control" name="sku" id="sku" placeholder="AAAA1111" maxlength="8" value="<?=!empty($prod)?$prod->getSku():''?>" required>
+        </div>
+        <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea class="form-control" name="descricao" id="descricao" rows="3"><?=!empty($prod)?$prod->getDescricao():''?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="preco">Preço (R$)</label>
+            <input type="text" class="form-control" name="preco" id="preco" placeholder="11.11" value="<?=!empty($prod)?number_format($prod->getPreco(), 2, '.', ''):''?>" required>
+        </div>
+        <div class="form-group">
+                <input type="hidden" name="id" value="<?=!empty($prod)?$prod->getId():''?>">
+                <a class="btn btn-secondary" href="<?php echo $this->url('produto') ?>">Voltar</a>
+                <input type="submit" class="btn btn-primary" name="submit" id="submit" value="Enviar">
+        </div>
+    </form>
+</div>

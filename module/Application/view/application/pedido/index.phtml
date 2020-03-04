@@ -1,0 +1,75 @@
+<div class="row">
+    <h2 class="mb-3">Pedidos</h2>
+</div>
+<div class="row">
+    <?php 
+        echo $this->flashMessenger()
+            ->setMessageOpenFormat('<div%s><p>')
+            ->setMessageSeparatorString('</p><p>')
+            ->setMessageCloseString('</p></div>')
+            ->render('error', array('alert alert-block alert-danger')); 
+    ?>
+    <?php 
+        echo $this->flashMessenger()
+            ->setMessageOpenFormat('<div%s><p>')
+            ->setMessageSeparatorString('</p><p>')
+            ->setMessageCloseString('</p></div>')
+            ->render('success', array('alert alert-success')); 
+    ?>
+</div>
+<div class="row">
+    <table class="table">
+        <thead>
+            <th scope="col">Data</th>
+            <th scope="col">Total</th>
+            <th scope="col"></th>
+        </thead>
+        <tbody>
+            <?php if(!isset($pedidos) || count($pedidos) == 0) : ?>
+            <tr>
+                <td colspan="5">Não existem pedidos!</td>
+            </tr>
+            <?php else : ?>
+                <?php foreach($pedidos as $p) : ?>
+                    <tr>
+                        <td><?= date('d/m/Y H:i:s', strtotime($p->getDtPedido())); ?></td>
+                        <td><?= 'R$'.number_format($p->getTotal(), 2,",","."); ?></td>
+                        <td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#produtos-<?=$p->getId()?>">Ver Produtos</button></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <a class="btn btn-primary" role="button" href="<?php echo $this->url('pedido/cadastrar') ?>">Novo Pedido</a>
+</div>
+<?php if(isset($pedidos) && count($pedidos) > 0) : ?>
+    <?php foreach($pedidos as $p) : ?>
+        <?php $arrProd = $p->getProdutos(); ?>
+        <div class="modal fade" id="produtos-<?=$p->getId()?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="exampleModalLongTitle">Produtos</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    <?php if(isset($arrProd) && count($arrProd) > 0) : ?>
+                        <ul id="lista-prod" class="list-group">
+                            <?php foreach($arrProd as $prod) : ?>
+                            <li class="list-group-item"><?=$prod->getSku() . ' - ' . $prod->getNome()  . ' - ' .  'R$'.number_format($prod->getPreco(), 2,",",".")?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
